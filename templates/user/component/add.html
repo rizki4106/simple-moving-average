@@ -1,0 +1,53 @@
+<div class="modal fade" id="modalAddAdmin" tabindex="-1" aria-labelledby="modalAddAdminLabel" aria-hidden="true">
+    <div class="modal-dialog" style="z-index: 1;">
+      <form action="/user/create" method="POST" class="modal-content">
+
+        {% csrf_token %}
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modalAddAdminLabel">Tambah User</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <!-- form -->
+            <div class="form-floating mb-3">
+                <input 
+                    type="text"
+                    class="form-control"
+                    id="nama"
+                    name="nama"
+                    required
+                />
+                <label for="nama">Nama Lengkap</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input 
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required
+                />
+                <label for="email">Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input 
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required
+                />
+                <label for="password">Password</label>
+            </div>
+            <!--  -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+</div>
