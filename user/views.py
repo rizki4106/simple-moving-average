@@ -9,25 +9,30 @@ from uuid import uuid4
 # models
 from .models import User
 
+# middleware
+from middleware.request import method
+
+# helper
+from helper.security import encrypt_password
+
 # Create your views here.
 def index(request):
     """Menampilkan list user
     """
 
     # ambil data user
-    user = User.objects.all().order_by("created_at")
-
-    print(user)
+    user = User.objects.all().order_by("-created_at")
 
     # parameter halaman
     context = {
-        "page_name": "Forecasting",
+        "page_name": "Data Pengguna",
         "data": user
     }
 
     # tampilkan halaman
     return render(request, "user/index.html", context)
 
+@method('POST')
 def create_user(request):
     """
     Menambahkan user baru kedalam database jika email belum terdaftar
@@ -60,7 +65,7 @@ def create_user(request):
         user_id=str(uuid4()),
         nama=param.get("nama"),
         email=param.get("email"),
-        password=param.get("password"),
+        password=encrypt_password(param.get("password")),
         created_at=datetime.now(),
         login_at=datetime.now()
     )
@@ -73,4 +78,33 @@ def create_user(request):
 
     # kembalikan ke halaman sebelumnya
     return redirect("/user")
+
+@method('GET')
+def delete_user(request, id):
+    """
+    View untuk menghapus user
+
+    param:
+        id : str -> id user
+    """
+
+    # ambil user
+    user = User.objects.filter(user_id=id)
+
+    # cek apakah user ada atau tidak
+    if user.exists():
+
+        # maka hapus user
+        user.delete()
+
+        # kirim pesan ke user
+        messages.add_message(request, messages.SUCCESS, "Berhasil menghapus user")
+    
+    else:
+
+        # jika tidak ada kirimkan pesan error
+        messages.add_message(request, messages.ERROR, "User tidak ditemukan")
+    
+    return redirect('/user')
+
     
