@@ -10,12 +10,13 @@ from uuid import uuid4
 from .models import User
 
 # middleware
-from middleware.request import method
+from middleware.request import method, admin_middleware
 
 # helper
 from helper.security import encrypt_password, verify_password
 
 # Create your views here.
+@admin_middleware()
 def index(request):
     """Menampilkan list user
     """
@@ -34,6 +35,7 @@ def index(request):
     return render(request, "user/index.html", context)
 
 @method('POST')
+@admin_middleware()
 def create_user(request):
     """
     Menambahkan user baru kedalam database jika email belum terdaftar
@@ -81,6 +83,7 @@ def create_user(request):
     return redirect("/user")
 
 @method('GET')
+@admin_middleware()
 def delete_user(request, id):
     """
     View untuk menghapus user
@@ -165,9 +168,10 @@ def do_login(request):
 
         return redirect("/user/login")
 
+@admin_middleware()
 def logout(request):
 
-    request.session['id'] = None
+    request.session['user_id'] = None
     request.session['nama'] = None
 
     return redirect('/user/login')

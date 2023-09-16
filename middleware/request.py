@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.shortcuts import redirect
 
 def method(http_method : str = "GET"):
     """
@@ -21,4 +22,21 @@ def method(http_method : str = "GET"):
         return _wrapped_view
     return decorator
 
-
+def admin_middleware():
+    """
+    Middleware untuk memastikan yang akses hanya admin
+    """
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            
+            # ambil sesi
+            sesi = request.session.get("user_id")
+            print(sesi)
+            
+            if sesi != None:
+                return view_func(request, *args, **kwargs)
+            else:
+                return redirect('/user/login')
+            
+        return wrapper
+    return decorator
