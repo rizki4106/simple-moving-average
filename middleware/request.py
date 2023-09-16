@@ -31,7 +31,6 @@ def admin_middleware():
             
             # ambil sesi
             sesi = request.session.get("user_id")
-            print(sesi)
             
             if sesi != None:
                 return view_func(request, *args, **kwargs)
