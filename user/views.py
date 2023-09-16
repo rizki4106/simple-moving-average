@@ -13,7 +13,7 @@ from .models import User
 from middleware.request import method
 
 # helper
-from helper.security import encrypt_password
+from helper.security import encrypt_password, verify_password
 
 # Create your views here.
 def index(request):
@@ -26,7 +26,8 @@ def index(request):
     # parameter halaman
     context = {
         "page_name": "Data Pengguna",
-        "data": user
+        "data": user,
+        "user": request.session.get("nama")
     }
 
     # tampilkan halaman
@@ -107,4 +108,66 @@ def delete_user(request, id):
     
     return redirect('/user')
 
-    
+@method("GET")
+def login(request):
+    """
+    Menampilkan halaman login
+    """
+    return render(request, "user/login.html")
+
+@method('POST')
+def do_login(request):
+    """
+    Melakukan autentikasi dengan mencocokan email serta password
+    dari dalam database. Jika cocok akan diarahkan ke halaman home
+    dan jika tidak cocok akan diarahkan ke halaman login
+
+    param:
+        email: str -> email user
+        password: str -> password user
+
+    method: POST
+    """
+
+    # ambil parameter
+    param = request.POST
+
+    # ambil user
+    user = User.objects.filter(
+        email=param.get("email")
+    )
+
+    # cek apakah email terdaftar
+    if user.exists():
+
+        # jika ada cek apakah password sesuai
+
+        if verify_password(param.get("password"), user[0].password):
+
+            # simpan sesi
+            request.session["user_id"] = str(user[0].user_id)
+            request.session['nama'] = user[0].nama
+            request.session['email'] = user[0].email
+
+            # jika password sama redirect ke home
+            return redirect('/')
+        else:
+
+            messages.add_message(request, messages.ERROR, "Password salah")
+
+            # jika tidak sama redirect ke halaman login
+            return redirect("/user/login")
+        
+    else:
+
+        # jika tidak ada kembalikan ke halaman login
+        messages.add_message(request, messages.ERROR, "Email tidak terdaftar")
+
+        return redirect("/user/login")
+
+def logout(request):
+
+    request.session['id'] = None
+    request.session['nama'] = None
+
+    return redirect('/user/login')
