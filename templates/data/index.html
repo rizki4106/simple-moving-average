@@ -16,8 +16,10 @@
                 <span class="d-block text-xs text-secondary">Menampilkan transaksi seluruh produk</span>
             </div>
             <button
-                type="button"
+                type="submit"
                 class="btn btn-success rounded-0"
+                data-bs-toggle="modal"
+                data-bs-target="#importModal"
             >Import Data</button>
         </div>
     </div>
@@ -34,10 +36,27 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ row.nama }}</td>
+                        <td>{{ row.qty }}</td>
+                        <td>{{ row.nilai }}</td>
+                        <td>{{ row.tanggal }}</td>
+                        <td>
+                            <a href="/data/delete/{{ row.id }}" class="btn btn-sm btn-danger rounded-0 p-0 ps-3 pe-3 pt-2 pb-2">Hapus</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<!-- modal import data -->
+{% include 'data/component/import.html' %}
 
 <script>
     let table = new DataTable("#tabel-user")
