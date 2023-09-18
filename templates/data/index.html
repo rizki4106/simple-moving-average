@@ -30,9 +30,9 @@
                     <tr>
                         <th>No</th>
                         <th>Nama Barang</th>
-                        <th>QTY</th>
-                        <th>Nilai</th>
-                        <th>Tanggal</th>
+                        <th>Kode</th>
+                        <th>Merek</th>
+                        <th>Satuan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -41,9 +41,9 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ row.nama }}</td>
-                        <td>{{ row.qty }}</td>
-                        <td>{{ row.nilai }}</td>
-                        <td>{{ row.tanggal }}</td>
+                        <td>{{ row.kode }}</td>
+                        <td>{{ row.merk }}</td>
+                        <td>{{ row.satuan }}</td>
                         <td>
                             <a href="/data/delete/{{ row.id }}" class="btn btn-sm btn-danger rounded-0 p-0 ps-3 pe-3 pt-2 pb-2">Hapus</a>
                         </td>

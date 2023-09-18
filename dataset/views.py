@@ -17,7 +17,7 @@ def index(request):
     Menampilkan list produk
     """
 
-    data = Data.objects.all().order_by('-nama')
+    data = Data.objects.all().order_by('nama')
 
     # definisikan data yang akan dikirim ke view
     context = {
@@ -39,32 +39,25 @@ def import_data(request):
     files = request.FILES
 
     # membaca file excel yang diupload
-    frame = pd.read_excel(files['file'])[["Tanggal", "Nama Barang", "Qty", "Nilai"]].iloc[:10]
+    frame = pd.read_excel(files['file'])
 
-    # menghilangkan string dari quantitas
-    frame['Qty'] = frame['Qty'].apply(lambda x : int(x.split(' ')[0]))
+    for i in range(len(frame)):
 
-
-    for row in frame.values:
-
-        # cek apakah file sudah ada didalam database atau belum
-        data_lama = Data.objects.filter(
-            nama=row[1],
-            tanggal=row[0].date()
-        )
+        # cek apakah data sudah ada atau belum
+        data_lama = Data.objects.filter(nama=frame['Nama Barang'][i])
 
         if not data_lama.exists():
 
-            # jika tidak ada maka masukan data baru
+            # jika data belum ada maka masukan
             data_baru = Data.objects.create(
-                nama=row[1],
-                tanggal=row[0].date(),
-                qty=row[2],
-                nilai=row[3]
+                nama=frame['Nama Barang'][i],
+                kode=frame['Kode Barang'][i],
+                merk=frame['Merk'][i],
+                satuan=frame['Isi Satuan'][i],
             )
 
             data_baru.save()
-    
+
     messages.add_message(request, messages.SUCCESS, "Berhasil menambahkan data")
 
     return redirect('/data')
